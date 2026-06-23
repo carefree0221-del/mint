@@ -56,6 +56,7 @@ const TEXT = {
   whitelistNo: "\u672a\u5728\u767d\u540d\u5355",
   connectFirst: "\u8fde\u63a5\u540e\u663e\u793a",
   tokenReward: "\u6301\u5e01\u53ef\u9886",
+  mintComplete: "Mint \u5df2\u5b8c\u6210\uff0c\u8bf7\u5173\u6ce8\u5f00\u76d8",
   readContract: "\u8bf7\u5728\u94fe\u63a5\u4e2d\u5e26\u4e0a contract \u5408\u7ea6\u5730\u5740",
   badWallet: "\u6ca1\u6709\u68c0\u6d4b\u5230\u94b1\u5305\uff0c\u8bf7\u5728 MetaMask \u6216 TP \u94b1\u5305\u5185\u6253\u5f00\u3002"
 };
@@ -102,6 +103,15 @@ function formatAmount(value, decimals = 18, max = 6) {
   const [whole, frac] = text.split(".");
   const trimmed = frac.slice(0, max).replace(/0+$/, "");
   return trimmed ? `${whole}.${trimmed}` : whole;
+}
+
+function displayTokenName(name) {
+  return String(name || "Mint Portal")
+    .replace(/（[\s\S]*$/g, "")
+    .replace(/\([\s\S]*$/g, "")
+    .replace(/（[^）]*）/g, "")
+    .replace(/\([^)]*\)/g, "")
+    .trim() || "Mint Portal";
 }
 
 function renderStats(id, items) {
@@ -217,7 +227,7 @@ async function refreshContract() {
     state.rewardDecimals = Number(await reward.decimals().catch(() => 18));
   }
 
-  $("tokenTitle").textContent = `${name} (${symbol})`;
+  $("tokenTitle").textContent = displayTokenName(name);
   $("mintModeBadge").textContent = Number(mode) === 0 ? "BNB" : "USDT";
   $("rewardUnitBadge").textContent = state.rewardSymbol;
 
@@ -243,9 +253,25 @@ async function approveIfNeeded(tokenAddress, spender, amount) {
   await tx.wait();
 }
 
-async function mintNow() {
-  await ensureWallet();
+async function ensureMintAvailable() {
   if (!state.contract) await loadContract();
+  const [mintedCount, maxMintCount, mintEnabled] = await Promise.all([
+    state.contract.mintedCount(),
+    state.contract.maxMintCount(),
+    state.contract.mintEnabled()
+  ]);
+  if (!mintEnabled || mintedCount >= maxMintCount) {
+    alert(TEXT.mintComplete);
+    log(TEXT.mintComplete);
+    return false;
+  }
+  return true;
+}
+
+async function mintNow() {
+  if (!state.contract) await loadContract();
+  if (!(await ensureMintAvailable())) return;
+  await ensureWallet();
   const mode = Number(await state.contract.mintMode());
   const price = await state.contract.mintPrice();
   let tx;
