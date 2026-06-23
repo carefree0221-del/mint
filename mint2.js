@@ -97,6 +97,12 @@ function log(message) {
   if (box) box.textContent = `[${new Date().toLocaleTimeString()}] ${message}\n` + box.textContent;
 }
 
+function showError(error) {
+  const message = error?.shortMessage || error?.reason || error?.message || String(error);
+  log(message);
+  alert(message);
+}
+
 function formatAmount(value, decimals = 18, max = 6) {
   const text = ethers.formatUnits(value, decimals);
   if (!text.includes(".")) return text;
@@ -270,7 +276,7 @@ async function ensureMintAvailable() {
 
 async function mintNow() {
   await ensureWallet();
-  if (!state.contract) await loadContract();
+  state.contract = new ethers.Contract(state.contractAddress || readContractAddress(), TOKEN_ABI, state.signer);
   const mode = Number(await state.contract.mintMode());
   const price = await state.contract.mintPrice();
   let tx;
@@ -302,7 +308,7 @@ async function run(button, fn) {
     await fn();
   } catch (error) {
     console.error(error);
-    log(error.shortMessage || error.reason || error.message || String(error));
+    showError(error);
   } finally {
     setBusy(button, false);
   }
