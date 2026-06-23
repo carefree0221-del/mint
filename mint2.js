@@ -188,6 +188,13 @@ async function connectWallet() {
   await finishWallet(provider);
 }
 
+async function switchNetwork() {
+  const provider = injectedProvider();
+  await ensureBscNetwork(provider);
+  $("networkName").textContent = NETWORKS[56].name;
+  if (state.signer) await finishWallet(provider);
+}
+
 async function trySilentConnect() {
   const provider = window.ethereum ? injectedProvider() : null;
   if (!provider?.request) return;
@@ -358,6 +365,7 @@ function boot() {
     log(error.message || String(error));
   }
   $("connectWallet").addEventListener("click", (event) => run(event.currentTarget, connectWallet));
+  $("switchNetwork").addEventListener("click", (event) => run(event.currentTarget, switchNetwork));
   $("mintNow").addEventListener("click", (event) => run(event.currentTarget, mintNow));
   $("claimDividends").addEventListener("click", (event) => run(event.currentTarget, claimDividends));
   $("loadContract")?.addEventListener("click", (event) => run(event.currentTarget, loadContract));

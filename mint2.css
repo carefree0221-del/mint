@@ -121,7 +121,7 @@ h2 {
 
 .account-strip {
   display: grid;
-  grid-template-columns: minmax(150px, 260px) minmax(120px, 210px) auto;
+  grid-template-columns: minmax(150px, 260px) minmax(120px, 210px) auto auto;
   gap: 8px;
   align-items: center;
 }
@@ -178,6 +178,13 @@ button:disabled {
 
 .connect-button {
   min-width: 104px;
+}
+
+.network-button {
+  min-width: 96px;
+  color: var(--yellow-2);
+  border-color: rgba(47, 128, 255, .45);
+  background: rgba(47, 128, 255, .13);
 }
 
 .connect-button.connected {
