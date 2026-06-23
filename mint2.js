@@ -57,6 +57,7 @@ const TEXT = {
   connectFirst: "\u8fde\u63a5\u540e\u663e\u793a",
   tokenReward: "\u6301\u5e01\u53ef\u9886",
   mintComplete: "Mint \u5df2\u5b8c\u6210\uff0c\u8bf7\u5173\u6ce8\u5f00\u76d8",
+  bnbNotEnough: "BNB \u94b1\u5305 BNB \u4e0d\u8db3\uff0c\u8bf7\u9884\u7559 Mint \u91d1\u989d\u548c Gas \u624b\u7eed\u8d39",
   readContract: "\u8bf7\u5728\u94fe\u63a5\u4e2d\u5e26\u4e0a contract \u5408\u7ea6\u5730\u5740",
   badWallet: "\u6ca1\u6709\u68c0\u6d4b\u5230\u94b1\u5305\uff0c\u8bf7\u5728 MetaMask \u6216 TP \u94b1\u5305\u5185\u6253\u5f00\u3002"
 };
@@ -98,7 +99,10 @@ function log(message) {
 }
 
 function showError(error) {
-  const message = error?.shortMessage || error?.reason || error?.message || String(error);
+  const raw = error?.shortMessage || error?.reason || error?.message || String(error);
+  const message = /insufficient funds|exceeds balance|not enough|gas \* price|overshot/i.test(raw)
+    ? TEXT.bnbNotEnough
+    : raw;
   log(message);
   alert(message);
 }
