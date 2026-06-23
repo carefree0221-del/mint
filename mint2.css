@@ -310,12 +310,23 @@ button:disabled {
   gap: 18px;
 }
 
+.avatar-stage h1 {
+  max-width: min(100%, 460px);
+  position: relative;
+  z-index: 3;
+  word-break: keep-all;
+  overflow-wrap: normal;
+}
+
 .avatar-stage::before,
 .avatar-stage::after {
   content: "";
   position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   border-radius: 999px;
   pointer-events: none;
+  z-index: 0;
 }
 
 .avatar-stage::before {
@@ -350,6 +361,8 @@ button:disabled {
     0 0 70px rgba(47, 128, 255, .38);
   transform: rotate(3deg);
   grid-row: 2;
+  position: relative;
+  z-index: 2;
 }
 
 .avatar-ring img {
@@ -521,6 +534,11 @@ input:focus {
     min-height: 250px;
   }
 
+  .avatar-stage h1 {
+    font-size: clamp(42px, 10vw, 70px);
+    line-height: .96;
+  }
+
   .avatar-stage::before {
     width: 250px;
     height: 250px;
@@ -553,7 +571,7 @@ input:focus {
   }
 
   h1 {
-    font-size: clamp(38px, 15vw, 62px);
+    font-size: clamp(36px, 12vw, 52px);
     text-align: center;
     width: 100%;
   }
