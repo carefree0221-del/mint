@@ -38,6 +38,14 @@ const NETWORKS = {
 };
 
 const BSC_RPC = "https://bsc-dataseed.binance.org";
+const BSC_CHAIN_ID_HEX = "0x38";
+const BSC_CHAIN_PARAMS = {
+  chainId: BSC_CHAIN_ID_HEX,
+  chainName: "BNB Smart Chain",
+  nativeCurrency: { name: "BNB", symbol: "BNB", decimals: 18 },
+  rpcUrls: [BSC_RPC],
+  blockExplorerUrls: ["https://bscscan.com"]
+};
 
 const TEXT = {
   connect: "\u8fde\u63a5\u94b1\u5305",
@@ -58,6 +66,7 @@ const TEXT = {
   tokenReward: "\u6301\u5e01\u53ef\u9886",
   mintComplete: "Mint \u5df2\u5b8c\u6210\uff0c\u8bf7\u5173\u6ce8\u5f00\u76d8",
   bnbNotEnough: "BNB \u94b1\u5305 BNB \u4e0d\u8db3\uff0c\u8bf7\u9884\u7559 Mint \u91d1\u989d\u548c Gas \u624b\u7eed\u8d39",
+  switchBsc: "\u8bf7\u5c06\u94b1\u5305\u7f51\u7edc\u5207\u6362\u5230 BNB Smart Chain",
   readContract: "\u8bf7\u5728\u94fe\u63a5\u4e2d\u5e26\u4e0a contract \u5408\u7ea6\u5730\u5740",
   badWallet: "\u6ca1\u6709\u68c0\u6d4b\u5230\u94b1\u5305\uff0c\u8bf7\u5728 MetaMask \u6216 TP \u94b1\u5305\u5185\u6253\u5f00\u3002"
 };
@@ -151,9 +160,31 @@ async function finishWallet(provider) {
   await loadContract();
 }
 
+async function ensureBscNetwork(provider) {
+  if (!provider?.request) return;
+  const currentChainId = await provider.request({ method: "eth_chainId" }).catch(() => "");
+  if (String(currentChainId).toLowerCase() === BSC_CHAIN_ID_HEX) return;
+  try {
+    await provider.request({
+      method: "wallet_switchEthereumChain",
+      params: [{ chainId: BSC_CHAIN_ID_HEX }]
+    });
+  } catch (error) {
+    if (error?.code === 4902 || /Unrecognized|not added|wallet_addEthereumChain/i.test(error?.message || "")) {
+      await provider.request({
+        method: "wallet_addEthereumChain",
+        params: [BSC_CHAIN_PARAMS]
+      });
+      return;
+    }
+    throw new Error(TEXT.switchBsc);
+  }
+}
+
 async function connectWallet() {
   const provider = injectedProvider();
   await provider.request({ method: "eth_requestAccounts" });
+  await ensureBscNetwork(provider);
   await finishWallet(provider);
 }
 
@@ -167,6 +198,7 @@ async function trySilentConnect() {
 
 async function ensureWallet() {
   if (!state.signer) await connectWallet();
+  else await ensureBscNetwork(injectedProvider());
 }
 
 function readContractAddress() {
