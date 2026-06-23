@@ -49,10 +49,11 @@ body::before {
 h1, h2, p { margin: 0; }
 
 h1 {
-  margin-top: 8px;
+  margin-top: 0;
   font-size: clamp(46px, 8vw, 96px);
   line-height: .92;
   letter-spacing: 0;
+  text-align: center;
   text-shadow: 0 4px 0 rgba(0, 0, 0, .34), 0 0 34px rgba(47, 128, 255, .2);
 }
 
@@ -303,8 +304,10 @@ button:disabled {
 .avatar-stage {
   min-height: 330px;
   display: grid;
+  grid-template-rows: auto 1fr;
   place-items: center;
   position: relative;
+  gap: 18px;
 }
 
 .avatar-stage::before,
@@ -323,6 +326,7 @@ button:disabled {
     conic-gradient(from 20deg, rgba(47, 128, 255, .82), rgba(207, 232, 255, .2), rgba(8, 64, 142, .86), rgba(47, 128, 255, .82));
   filter: blur(.2px);
   opacity: .8;
+  bottom: 0;
 }
 
 .avatar-stage::after {
@@ -330,6 +334,7 @@ button:disabled {
   height: 250px;
   border: 1px dashed rgba(244, 242, 238, .24);
   box-shadow: 0 0 60px rgba(47, 128, 255, .3);
+  bottom: 42px;
 }
 
 .avatar-ring {
@@ -344,6 +349,7 @@ button:disabled {
     0 0 0 8px rgba(47, 128, 255, .12),
     0 0 70px rgba(47, 128, 255, .38);
   transform: rotate(3deg);
+  grid-row: 2;
 }
 
 .avatar-ring img {
