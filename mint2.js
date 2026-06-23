@@ -271,7 +271,6 @@ async function ensureMintAvailable() {
 async function mintNow() {
   await ensureWallet();
   if (!state.contract) await loadContract();
-  if (!(await ensureMintAvailable())) return;
   const mode = Number(await state.contract.mintMode());
   const price = await state.contract.mintPrice();
   let tx;
