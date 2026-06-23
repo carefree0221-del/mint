@@ -57,6 +57,18 @@ h1 {
   text-shadow: 0 4px 0 rgba(0, 0, 0, .34), 0 0 34px rgba(47, 128, 255, .2);
 }
 
+.token-name {
+  display: block;
+  margin: 4px 0 8px;
+  color: var(--yellow-2);
+  font-size: clamp(24px, 4vw, 38px);
+  line-height: 1;
+  font-weight: 950;
+  text-shadow: 0 0 24px rgba(47, 128, 255, .2);
+  word-break: keep-all;
+  overflow-wrap: normal;
+}
+
 h2 {
   font-size: 24px;
   line-height: 1.1;
@@ -310,14 +322,6 @@ button:disabled {
   gap: 18px;
 }
 
-.avatar-stage h1 {
-  max-width: min(100%, 460px);
-  position: relative;
-  z-index: 3;
-  word-break: keep-all;
-  overflow-wrap: normal;
-}
-
 .avatar-stage::before,
 .avatar-stage::after {
   content: "";
@@ -534,11 +538,6 @@ input:focus {
     min-height: 250px;
   }
 
-  .avatar-stage h1 {
-    font-size: clamp(42px, 10vw, 70px);
-    line-height: .96;
-  }
-
   .avatar-stage::before {
     width: 250px;
     height: 250px;
@@ -574,6 +573,11 @@ input:focus {
     font-size: clamp(36px, 12vw, 52px);
     text-align: center;
     width: 100%;
+  }
+
+  .token-name {
+    text-align: left;
+    font-size: clamp(24px, 9vw, 34px);
   }
 
   .mint-rules li {

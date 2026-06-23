@@ -4,8 +4,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Mint Portal</title>
-    <link rel="stylesheet" href="./mint2.css" />
-    <script type="module" src="./mint2.js?v=20260623-title-avatar-fix"></script>
+    <link id="themeCss" rel="stylesheet" href="./mint2.css" />
+    <script type="module">
+      const assetVersion = Date.now();
+      document.getElementById("themeCss").href = `./mint2.css?v=${assetVersion}`;
+      import(`./mint2.js?v=${assetVersion}`);
+    </script>
   </head>
   <body>
     <main class="page">
@@ -39,13 +43,12 @@
               </ul>
             </div>
             <div class="hero-metrics">
-              <span>Fair Mint</span>
-              <span>Instant Claim</span>
-              <span>Wallet Guard</span>
+              <span>&#20844;&#24179; Mint</span>
+              <span>&#31186;&#21040;&#36134;</span>
+              <span>&#38065;&#21253;&#38480;&#27425;</span>
             </div>
           </div>
           <div class="avatar-stage" aria-hidden="true">
-            <h1 id="tokenTitle">Mint Portal</h1>
             <div class="avatar-ring">
               <img src="./mint2-avatar.jpg" alt="" />
             </div>
@@ -65,6 +68,7 @@
           <div class="card-head">
             <div>
               <p class="eyebrow">Mint</p>
+              <strong id="tokenTitle" class="token-name">Mint Portal</strong>
               <h2>&#21442;&#19982; Mint</h2>
             </div>
           </div>
